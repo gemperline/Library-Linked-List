@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 #include "book.cpp"
 #include "person.cpp"
@@ -35,8 +36,8 @@ Book * searchBook(vector<Book *> myBooks, int id) {
 
 void readBooks(vector<Book *> & myBooks)
 {
-  string input;
-  int bookID;
+  string line;
+  string bookID;
   string title;
   string author;
   string category;
@@ -52,15 +53,18 @@ void readBooks(vector<Book *> & myBooks)
   }
   else
   {
-    while(inFile >> bookID)
+    while(getline(inFile, line))
     {
-      inFile >> title >> author >> category;
+      inFile >> bookID >> title >> author >> category;
       cout << "ID: " << bookID << endl;
       cout << "Title: " << title << endl;
       cout << "Author: " << author << endl;
       cout << "Category: " << category << endl;
 
-      bookPtr = new Book(bookID, title, author, category);
+      stringstream geek(bookID);
+      int id;
+      id = stoi(bookID);
+      bookPtr = new Book(id, title, author, category);
 
       myBooks.push_back(bookPtr);
 
@@ -127,7 +131,6 @@ void closeCard()
 {
 
 }
-
 
 
 int main()
