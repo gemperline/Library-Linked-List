@@ -11,14 +11,50 @@
 
 using namespace std;
 
-/* You are not obligated to use these function declarations - they're just given as examples
-void readBooks(vector<Book *> & myBooks) {
-    return;
+
+
+
+Person * readPersons(vector<Person *> & myCardholders) {
+
+  string cardID;
+  string active;
+  string fName;
+  string lName;
+  string fullName;
+  Person * personPtr;
+
+  ifstream inFile;
+  inFile.open("persons.txt");
+
+  if(!inFile.is_open())
+  {
+    cout << "ERROR opening file ..." << endl;
+  }
+  else
+  {
+    cout << "Reading cardholders into vector ..." << endl;
+
+    while(inFile >> cardID)
+    {
+      inFile >> active >> fName >> lName;
+
+      fullName = fName + " " + lName;
+
+      // parse strings to types
+      int cID = stoi(cardID);
+      bool act = stoi(active);
+
+      // create a new person with assigned members
+      personPtr = new Person(cID, act, fName, lName);
+      myCardholders.push_back(personPtr);
+    }
+  }
+  inFile.close();
+  return personPtr;
 }
 
-int readPersons(vector<Person *> & myCardholders) {
-    return 0;
-}
+
+
 
 void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders) {
     return;
@@ -28,19 +64,16 @@ void openCard(vector<Person *> & myCardholders, int nextID) {
     return;
 }
 
-Book * searchBook(vector<Book *> myBooks, int id) {
-    return nullptr;
-}
-*/
 
-void readBooks(vector<Book *> & myBooks)
+
+
+Book * readBooks(vector<Book *> & myBooks)
 {
-  string input;
-  int bookID;
+  string line;
+  string bookID;
   string title;
   string author;
   string category;
-
   Book * bookPtr;
 
   ifstream inFile;
@@ -48,25 +81,66 @@ void readBooks(vector<Book *> & myBooks)
 
   if(!inFile.is_open())
   {
-    cout << "ERROR opening file" << endl;
+    cout << "ERROR opening file ..." << endl;
   }
   else
   {
-    while(inFile >> bookID)
+    cout << "Reading books into vector ..." << endl;
+
+    while(!inFile.eof())
     {
-      inFile >> title >> author >> category;
+      getline(inFile, bookID);
+      getline(inFile, title);
+      getline(inFile, author);
+      getline(inFile, category);
+      getline(inFile, line);
+/*
       cout << "ID: " << bookID << endl;
       cout << "Title: " << title << endl;
       cout << "Author: " << author << endl;
       cout << "Category: " << category << endl;
-
-      bookPtr = new Book(bookID, title, author, category);
-
+      cout << endl;
+*/
+      // parse string to int
+      int bID = stoi(bookID);
+      // create a new book with assigned members
+      bookPtr = new Book(bID, title, author, category);
       myBooks.push_back(bookPtr);
 
     }
   }
+  inFile.close();
+  return bookPtr;
 }
+
+
+
+Person * findPerson(vector<Person *> & p, int id)
+{
+  for(int i = 0; i < p.size(); i++)
+  {
+    if(p.at(i)->getId() == id)
+      return p.at(i);
+  }
+  // if person not found, return nullptr
+  return nullptr;
+}
+
+
+
+Book * findBook(vector<Book *> & b, int id)
+{
+  for(int i = 0; i < b.size(); i++)
+  {
+    if(b.at(i)->getId() == id)
+      return b.at(i);
+  }
+  // if book not found, return nullptr
+  return nullptr;
+}
+
+
+
 
 void printMenu()
 {
@@ -86,15 +160,35 @@ void printMenu()
 }
 
 
-void bookCheckout()
+void bookCheckout(vector<Person *> & p, vector<Book *> & b)
 {
+  // create local ptrs and set equal to calling search function
   int cardID, bookID;
-
-  cout << "Please enter the card ID: ";
+  Person * pPtr =; // 
+  cout << "Please enter your card ID: ";
   cin >> cardID;
-  cout << "Please enter the book ID: ";
-  cin >> bookID;
 
+  if(findPerson(p,cardID) != nullptr)
+  {
+    cout << "Cardholder: " << p->fullName() << endl;
+
+    cout << "Please enter the book ID: ";
+    cin >> bookID;
+
+    if(findBook(b, bookID) != nullptr)
+    {
+
+      cout << "Title: " << b->getTitle() << endl;
+    }
+    else
+    {
+      cout << "Book not found." << endl;
+    }
+  }
+  else
+  {
+    cout << "ID not found." << endl;
+  }
 }
 
 
@@ -133,20 +227,22 @@ void closeCard()
 int main()
 {
   vector<Book *> books;
-  vector<Person *> cardHolders;
+  vector<Person *> cardholders;
   int option;
-  readBooks(books);
 
+  readBooks(books);
+  readPersons(cardholders);
   printMenu();
-  cin >> option;
 
   // Menu loops until exit is selected
   do
   {
+    cout << "Option: ";
+    cin >> option;
     switch (option)
     {
       case 1:
-        bookCheckout();
+        bookCheckout(cardholders, books);
         break;
       case 2:
         bookReturn();
@@ -171,8 +267,6 @@ int main()
     }
     cout << endl;
   } while (option != 8);
-
-
 
   return 0;
 }
