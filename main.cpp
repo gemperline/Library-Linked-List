@@ -164,21 +164,25 @@ void bookCheckout(vector<Person *> & p, vector<Book *> & b)
 {
   // create local ptrs and set equal to calling search function
   int cardID, bookID;
-  Person * pPtr =; // 
+  Person * personPtr;
+  Book * bookPtr;
   cout << "Please enter your card ID: ";
   cin >> cardID;
 
-  if(findPerson(p,cardID) != nullptr)
-  {
-    cout << "Cardholder: " << p->fullName() << endl;
+  personPtr = findPerson(p,cardID);
 
+  if(personPtr != nullptr)
+  {
+    cout << "Cardholder: " << personPtr->fullName() << endl;
     cout << "Please enter the book ID: ";
     cin >> bookID;
 
-    if(findBook(b, bookID) != nullptr)
+    bookPtr = findBook(b, bookID);
+
+    if(bookPtr != nullptr)
     {
 
-      cout << "Title: " << b->getTitle() << endl;
+      cout << "Title: " << bookPtr->getTitle() << endl;
     }
     else
     {

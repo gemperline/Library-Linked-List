@@ -31,5 +31,5 @@ bool Person::isActive() {
 }
 
 string Person::fullName() {
-    return firstName + lastName;
+    return firstName + " " + lastName;
 }
