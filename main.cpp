@@ -12,8 +12,6 @@
 using namespace std;
 
 
-
-
 Person * readPersons(vector<Person *> & myCardholders) {
 
   string cardID;
@@ -94,13 +92,7 @@ Book * readBooks(vector<Book *> & myBooks)
       getline(inFile, author);
       getline(inFile, category);
       getline(inFile, line);
-/*
-      cout << "ID: " << bookID << endl;
-      cout << "Title: " << title << endl;
-      cout << "Author: " << author << endl;
-      cout << "Category: " << category << endl;
-      cout << endl;
-*/
+
       // parse string to int
       int bID = stoi(bookID);
       // create a new book with assigned members
@@ -171,7 +163,7 @@ void bookCheckout(vector<Person *> & p, vector<Book *> & b)
 
   personPtr = findPerson(p,cardID);
 
-  if(personPtr != nullptr)
+  if(personPtr != nullptr && personPtr->isActive() == true)
   {
     cout << "Cardholder: " << personPtr->fullName() << endl;
     cout << "Please enter the book ID: ";
@@ -181,17 +173,20 @@ void bookCheckout(vector<Person *> & p, vector<Book *> & b)
 
     if(bookPtr != nullptr)
     {
-
       cout << "Title: " << bookPtr->getTitle() << endl;
     }
     else
     {
-      cout << "Book not found." << endl;
+      cout << "Book ID not found." << endl;
     }
+  }
+  else if(personPtr->isActive() == false)
+  {
+    cout << "Card is inactive" << endl;
   }
   else
   {
-    cout << "ID not found." << endl;
+    cout << "Card ID not found." << endl;
   }
 }
 
@@ -241,7 +236,7 @@ int main()
   // Menu loops until exit is selected
   do
   {
-    cout << "Option: ";
+    cout << "\nOption: ";
     cin >> option;
     switch (option)
     {
