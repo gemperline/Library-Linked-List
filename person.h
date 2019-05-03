@@ -18,7 +18,7 @@ public:
     Person (int cardNo, bool act, string fName, string lName);
     string getFirstName();
     string getLastName();
-    int    getId();
+    int    getID();
 	  void   setActive(bool act);
 	  bool   isActive();
     string fullName();

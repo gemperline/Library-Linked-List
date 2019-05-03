@@ -15,7 +15,7 @@ string Person::getLastName() {
     return lastName;
 }
 
-int Person::getId() {
+int Person::getID() {
     return cardID;
 }
 
