@@ -16,8 +16,8 @@ Person * findPerson(vector<Person *> & p, int id);
 
 
 
-Person * readPersons(vector<Person *> & myCardholders) {
-
+Person * readPersons(vector<Person *> & myCardholders)
+{
   int cardID;
   bool active;
   string fName;
@@ -81,10 +81,6 @@ void readRentals(vector<Book *> & myBooks, vector<Person *> myCardholders)
   }
 }
 
-void openCard(vector<Person *> & myCardholders, int nextID) {
-    return;
-}
-
 
 
 Book * readBooks(vector<Book *> & myBooks)
@@ -120,7 +116,6 @@ Book * readBooks(vector<Book *> & myBooks)
       // create a new book with assigned members
       bookPtr = new Book(bID, title, author, category);
       myBooks.push_back(bookPtr);
-
     }
   }
   inFile.close();
@@ -152,6 +147,7 @@ Person * searchPerson(vector<Person *> & p, string name)
   // if person not found, return nullptr
   return nullptr;
 }
+
 
 
 Book * findBook(vector<Book *> & b, int id)
@@ -303,6 +299,8 @@ Book * outstandingRentals(vector<Book *> &myBooks)
   }
 }
 
+
+
 void outstandingRentalsCardholder(vector<Book *> &myBooks, vector<Person *> &myCardholders)
 {
   Book * bookPtr;
@@ -314,7 +312,7 @@ void outstandingRentalsCardholder(vector<Book *> &myBooks, vector<Person *> &myC
   personPtr = findPerson(myCardholders, cardID);
   cout << personPtr->fullName() << endl;
   cout << personPtr->getID() << endl;
-  
+
   for(int i = 0; i < myBooks.size(); i++)
   {
     bookPtr = myBooks.at(i);
@@ -328,6 +326,8 @@ void outstandingRentalsCardholder(vector<Book *> &myBooks, vector<Person *> &myC
     }
   }
 }
+
+
 
 void newCard(vector<Person *> &myCardholders)
 {
@@ -379,8 +379,14 @@ void newCard(vector<Person *> &myCardholders)
 
     cout << "Card ID " << p->getID() << " activated" << endl;
     cout << "Cardholder: " << p->fullName() << endl;
+
+    p = nullptr;
+    delete p;
+    inFile.close();
   }
 }
+
+
 
 void closeCard(vector<Person *> &myCardholders)
 {
