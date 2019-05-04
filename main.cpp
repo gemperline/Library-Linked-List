@@ -142,6 +142,18 @@ Person * findPerson(vector<Person *> & p, int id)
 
 
 
+Person * searchPerson(vector<Person *> & p, string name)
+{
+  for(int i = 0; i < p.size(); i++)
+  {
+    if(p.at(i)->fullName() == name)
+      return p.at(i);
+  }
+  // if person not found, return nullptr
+  return nullptr;
+}
+
+
 Book * findBook(vector<Book *> & b, int id)
 {
   for(int i = 0; i < b.size(); i++)
@@ -302,30 +314,85 @@ void outstandingRentalsCardholder(vector<Book *> &myBooks, vector<Person *> &myC
   personPtr = findPerson(myCardholders, cardID);
   cout << personPtr->fullName() << endl;
   cout << personPtr->getID() << endl;
-
+  
   for(int i = 0; i < myBooks.size(); i++)
   {
     bookPtr = myBooks.at(i);
-    cout << myBooks.at(i)->getPersonPtr()->getID() << endl;
-    /*
-    if(myBooks.at(i)->personPtr->getId())
-    {
+
+    if(personPtr != nullptr && bookPtr->getPersonPtr()->getID() == cardID)
+    {/*
       cout << "Book ID: " << myBooks.at(i)->getId() << endl;
       cout << "Title: " << myBooks.at(i)->getTitle() << endl;
       cout << "Author: " << myBooks.at(i)->getAuthor() << endl;
-      cout << endl;
-    }*/
+      cout << endl;*/
+    }
   }
 }
 
-void newCard()
+void newCard(vector<Person *> &myCardholders)
 {
+  string fName, lName, fullName;
+  int cardID;
 
+  cout << "Please enter the first name: ";
+  cin >> fName;
+  cout << "Please enter the last name: ";
+  cin >> lName;
+  fullName = fName + " " + lName;
+
+  // check to see if the user exists in the system
+  Person * personPtr;
+  personPtr = searchPerson(myCardholders, fullName);
+
+  if(personPtr != nullptr && personPtr->isActive() == false)
+  {
+    // if person already exists in system, reactivate card ID
+    cout << "The cardholder " << fullName << " already exists." << endl;
+    personPtr->setActive(1);
+    cout << "Card ID " << personPtr->getID() << " is now active." << endl;
+  }
+  else if(personPtr != nullptr && personPtr->isActive() == true)
+  {
+    cout << "The cardholder " << fullName << " already exists." << endl;
+    cout << "Card ID " << personPtr->getID() << " is already active." << endl;
+  }
+  else if (personPtr == nullptr)
+  {
+    int numCardholders = 0;
+    int cardID;
+    string line;
+    ifstream inFile;
+    inFile.open("persons.txt");
+
+    // get the next sequential ID number
+    while(getline(inFile, line) && !inFile.eof())
+    {
+      inFile >> cardID;
+      numCardholders++;
+    }
+    // increment to set card ID as next sequential number
+    cardID++;
+
+    // create a new person
+    Person * p = new Person(cardID, 1, fName, lName);
+    myCardholders.push_back(p);
+
+    cout << "Card ID " << p->getID() << " activated" << endl;
+    cout << "Cardholder: " << p->fullName() << endl;
+  }
 }
 
-void closeCard()
+void closeCard(vector<Person *> &myCardholders)
 {
+  int cardID;
+  Person * personPtr;
 
+  cout << "Please enter the card id: ";
+  cin >> cardID;
+
+  personPtr = findPerson(myCardholders, cardID);
+  personPtr->setActive(0);
+  cout << "Card ID: " << personPtr->getID() << " deactivated" << endl;
 }
 
 
@@ -368,10 +435,10 @@ int main()
         outstandingRentalsCardholder(books, cardholders);
         break;
       case 6:
-        newCard();
+        newCard(cardholders);
         break;
       case 7:
-        closeCard();
+        closeCard(cardholders);
         break;
       case 8:
         break;
